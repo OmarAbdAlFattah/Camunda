@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" id="Definitions_0f8l29l" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.0.0">
+  <bpmn:process id="Process_10n7r4j" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_0dcqhcb</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0dcqhcb" sourceRef="StartEvent_1" targetRef="Activity_1w8ou05" />
+    <bpmn:sequenceFlow id="Flow_1p978eg" sourceRef="Activity_1w8ou05" targetRef="Activity_11e3v19" />
+    <bpmn:sequenceFlow id="Flow_1i5n7sn" sourceRef="Activity_01d21xj" targetRef="Activity_01kw5jf" />
+    <bpmn:endEvent id="Event_02p2eaw">
+      <bpmn:incoming>Flow_1l2ohbb</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="Activity_1w8ou05" name="decode" camunda:delegateExpression="${invoiceDecoder}">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="encodedInvoice">${encodedInvoice}</camunda:inputParameter>
+          <camunda:outputParameter name="decodedInvoice">${decodedInvoice}</camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0dcqhcb</bpmn:incoming>
+      <bpmn:outgoing>Flow_1p978eg</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_11e3v19" name="dom-builder" camunda:delegateExpression="${domBuilder}">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="decodedInvoice">${decodedInvoice}</camunda:inputParameter>
+          <camunda:outputParameter name="doc">${doc}</camunda:outputParameter>
+          <camunda:outputParameter name="xpath">${xpath}</camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1p978eg</bpmn:incoming>
+      <bpmn:outgoing>Flow_1nhkbip</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_01d21xj" name="xsd-validator" camunda:delegateExpression="${validator}">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="decoded-Invoice">${decodedInvoice}</camunda:inputParameter>
+          <camunda:inputParameter name="xsdFilePath">${xsdFilePath}</camunda:inputParameter>
+          <camunda:outputParameter name="validationResult">validationResult</camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1nhkbip</bpmn:incoming>
+      <bpmn:outgoing>Flow_1i5n7sn</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Activity_01kw5jf" name="en-schematron-validator" camunda:delegateExpression="${enSchemaValidator}">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="decoded-invoice">${decodedInvoice}</camunda:inputParameter>
+          <camunda:inputParameter name="enXsdFile">${enXsdFile}</camunda:inputParameter>
+          <camunda:inputParameter name="language">${lang}</camunda:inputParameter>
+          <camunda:outputParameter name="out_put">${output}</camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1i5n7sn</bpmn:incoming>
+      <bpmn:outgoing>Flow_161aeu4</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1nhkbip" sourceRef="Activity_11e3v19" targetRef="Activity_01d21xj" />
+    <bpmn:serviceTask id="Activity_REST" name="error_code_getter">
+      <bpmn:extensionElements>
+        <camunda:properties>
+          <camunda:property />
+        </camunda:properties>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="url">http://localhost:8080/get/${errorcode}</camunda:inputParameter>
+            <camunda:inputParameter name="method">GET</camunda:inputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0qr83t2</bpmn:incoming>
+      <bpmn:outgoing>Flow_1l2ohbb</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0cqxfln" sourceRef="Activity_1rp9fu1" targetRef="Activity_1rsjtw0" />
+    <bpmn:serviceTask id="Activity_1rp9fu1" name="dummy">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="input_message">${output}</camunda:inputParameter>
+        </camunda:inputOutput>
+        <camunda:connector>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="url">http://localhost:8080/add</camunda:inputParameter>
+            <camunda:inputParameter name="method">POST</camunda:inputParameter>
+            <camunda:inputParameter name="payload">${errorAndWarResultsDTO}</camunda:inputParameter>
+            <camunda:inputParameter name="headers">
+              <camunda:map>
+                <camunda:entry key="Content-Type">application/json</camunda:entry>
+              </camunda:map>
+            </camunda:inputParameter>
+          </camunda:inputOutput>
+          <camunda:connectorId>http-connector</camunda:connectorId>
+        </camunda:connector>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_161aeu4</bpmn:incoming>
+      <bpmn:outgoing>Flow_0cqxfln</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_161aeu4" sourceRef="Activity_01kw5jf" targetRef="Activity_1rp9fu1" />
+    <bpmn:sequenceFlow id="Flow_1l2ohbb" sourceRef="Activity_REST" targetRef="Event_02p2eaw" />
+    <bpmn:sequenceFlow id="Flow_0qr83t2" sourceRef="Activity_1rsjtw0" targetRef="Activity_REST" />
+    <bpmn:serviceTask id="Activity_1rsjtw0" name="enter error code" camunda:delegateExpression="${codeClass}">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:outputParameter name="error-code">${errorcode}</camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0cqxfln</bpmn:incoming>
+      <bpmn:outgoing>Flow_0qr83t2</bpmn:outgoing>
+    </bpmn:serviceTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_10n7r4j">
+      <bpmndi:BPMNEdge id="Flow_1nhkbip_di" bpmnElement="Flow_1nhkbip">
+        <di:waypoint x="520" y="117" />
+        <di:waypoint x="590" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_161aeu4_di" bpmnElement="Flow_161aeu4">
+        <di:waypoint x="890" y="117" />
+        <di:waypoint x="950" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1i5n7sn_di" bpmnElement="Flow_1i5n7sn">
+        <di:waypoint x="690" y="117" />
+        <di:waypoint x="790" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1p978eg_di" bpmnElement="Flow_1p978eg">
+        <di:waypoint x="370" y="117" />
+        <di:waypoint x="420" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0dcqhcb_di" bpmnElement="Flow_0dcqhcb">
+        <di:waypoint x="215" y="117" />
+        <di:waypoint x="270" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0cqxfln_di" bpmnElement="Flow_0cqxfln">
+        <di:waypoint x="1050" y="117" />
+        <di:waypoint x="1130" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0qr83t2_di" bpmnElement="Flow_0qr83t2">
+        <di:waypoint x="1230" y="117" />
+        <di:waypoint x="1320" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1l2ohbb_di" bpmnElement="Flow_1l2ohbb">
+        <di:waypoint x="1420" y="117" />
+        <di:waypoint x="1492" y="117" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_13e3d4g_di" bpmnElement="Activity_1w8ou05">
+        <dc:Bounds x="270" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1admfsf_di" bpmnElement="Activity_11e3v19">
+        <dc:Bounds x="420" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1c89emj_di" bpmnElement="Activity_01d21xj">
+        <dc:Bounds x="590" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0tniisr_di" bpmnElement="Activity_01kw5jf">
+        <dc:Bounds x="790" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1dhhr8n_di" bpmnElement="Activity_1rp9fu1" bioc:stroke="rgb(67, 160, 71)" bioc:fill="rgb(200, 230, 201)">
+        <dc:Bounds x="950" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ibxare_di" bpmnElement="Activity_REST" bioc:stroke="rgb(67, 160, 71)" bioc:fill="rgb(200, 230, 201)">
+        <dc:Bounds x="1320" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_02p2eaw_di" bpmnElement="Event_02p2eaw">
+        <dc:Bounds x="1492" y="99" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_184xdn5_di" bpmnElement="Activity_1rsjtw0" bioc:stroke="rgb(30, 136, 229)" bioc:fill="rgb(187, 222, 251)">
+        <dc:Bounds x="1130" y="77" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -1,0 +1,79 @@
+-------------------------------------------------------------------------------
+Test set: com.example.workflow.WorkflowTest
+-------------------------------------------------------------------------------
+Tests run: 1, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 10.804 sec <<< FAILURE!
+shouldExecuteHappyPath(com.example.workflow.WorkflowTest)  Time elapsed: 0.013 sec  <<< ERROR!
+org.camunda.bpm.engine.ProcessEngineException: ENGINE-03018 Could not check if tables are already present using metadata.
+	at org.camunda.bpm.engine.impl.db.EnginePersistenceLogger.checkDatabaseTableException(EnginePersistenceLogger.java:247)
+	at org.camunda.bpm.engine.impl.db.sql.DbSqlSession.isTablePresent(DbSqlSession.java:657)
+	at org.camunda.bpm.engine.impl.db.sql.DbSqlSession.isEngineTablePresent(DbSqlSession.java:599)
+	at org.camunda.bpm.engine.impl.db.AbstractPersistenceSession.dbSchemaCreate(AbstractPersistenceSession.java:86)
+	at org.camunda.bpm.engine.impl.SchemaOperationsProcessEngineBuild.execute(SchemaOperationsProcessEngineBuild.java:52)
+	at org.camunda.bpm.engine.impl.SchemaOperationsProcessEngineBuild.execute(SchemaOperationsProcessEngineBuild.java:34)
+	at org.camunda.bpm.engine.impl.interceptor.CommandExecutorImpl.execute(CommandExecutorImpl.java:28)
+	at org.camunda.bpm.engine.impl.interceptor.CommandContextInterceptor.execute(CommandContextInterceptor.java:110)
+	at org.camunda.bpm.engine.impl.interceptor.ProcessApplicationContextInterceptor.execute(ProcessApplicationContextInterceptor.java:70)
+	at org.camunda.bpm.engine.impl.interceptor.CommandCounterInterceptor.execute(CommandCounterInterceptor.java:35)
+	at org.camunda.bpm.engine.impl.interceptor.LogInterceptor.execute(LogInterceptor.java:33)
+	at org.camunda.bpm.engine.impl.interceptor.ExceptionCodeInterceptor.execute(ExceptionCodeInterceptor.java:55)
+	at org.camunda.bpm.engine.impl.ProcessEngineImpl.executeSchemaOperations(ProcessEngineImpl.java:147)
+	at org.camunda.bpm.engine.impl.ProcessEngineImpl.<init>(ProcessEngineImpl.java:110)
+	at org.camunda.bpm.engine.impl.cfg.ProcessEngineConfigurationImpl.buildProcessEngine(ProcessEngineConfigurationImpl.java:1101)
+	at org.camunda.bpm.spring.boot.starter.test.helper.StandaloneInMemoryTestConfiguration.rule(StandaloneInMemoryTestConfiguration.java:54)
+	at org.camunda.bpm.spring.boot.starter.test.helper.AbstractProcessEngineRuleTest.<init>(AbstractProcessEngineRuleTest.java:27)
+	at com.example.workflow.WorkflowTest.<init>(WorkflowTest.java:16)
+	at java.base/jdk.internal.reflect.DirectConstructorHandleAccessor.newInstance(DirectConstructorHandleAccessor.java:67)
+	at java.base/java.lang.reflect.Constructor.newInstanceWithCaller(Constructor.java:500)
+	at java.base/java.lang.reflect.Constructor.newInstance(Constructor.java:484)
+	at org.junit.runners.BlockJUnit4ClassRunner.createTest(BlockJUnit4ClassRunner.java:250)
+	at org.springframework.test.context.junit4.SpringJUnit4ClassRunner.createTest(SpringJUnit4ClassRunner.java:226)
+	at org.springframework.test.context.junit4.SpringJUnit4ClassRunner$1.runReflectiveCall(SpringJUnit4ClassRunner.java:289)
+	at org.junit.internal.runners.model.ReflectiveCallable.run(ReflectiveCallable.java:12)
+	at org.springframework.test.context.junit4.SpringJUnit4ClassRunner.methodBlock(SpringJUnit4ClassRunner.java:291)
+	at org.springframework.test.context.junit4.SpringJUnit4ClassRunner.runChild(SpringJUnit4ClassRunner.java:246)
+	at org.springframework.test.context.junit4.SpringJUnit4ClassRunner.runChild(SpringJUnit4ClassRunner.java:97)
+	at org.junit.runners.ParentRunner$4.run(ParentRunner.java:331)
+	at org.junit.runners.ParentRunner$1.schedule(ParentRunner.java:79)
+	at org.junit.runners.ParentRunner.runChildren(ParentRunner.java:329)
+	at org.junit.runners.ParentRunner.access$100(ParentRunner.java:66)
+	at org.junit.runners.ParentRunner$2.evaluate(ParentRunner.java:293)
+	at org.springframework.test.context.junit4.statements.RunBeforeTestClassCallbacks.evaluate(RunBeforeTestClassCallbacks.java:61)
+	at org.springframework.test.context.junit4.statements.RunAfterTestClassCallbacks.evaluate(RunAfterTestClassCallbacks.java:70)
+	at org.junit.runners.ParentRunner$3.evaluate(ParentRunner.java:306)
+	at org.junit.runners.ParentRunner.run(ParentRunner.java:413)
+	at org.springframework.test.context.junit4.SpringJUnit4ClassRunner.run(SpringJUnit4ClassRunner.java:190)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.execute(JUnit4Provider.java:252)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.executeTestSet(JUnit4Provider.java:141)
+	at org.apache.maven.surefire.junit4.JUnit4Provider.invoke(JUnit4Provider.java:112)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:578)
+	at org.apache.maven.surefire.util.ReflectionUtils.invokeMethodWithArray(ReflectionUtils.java:189)
+	at org.apache.maven.surefire.booter.ProviderFactory$ProviderProxy.invoke(ProviderFactory.java:165)
+	at org.apache.maven.surefire.booter.ProviderFactory.invokeProvider(ProviderFactory.java:85)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:115)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:75)
+Caused by: org.camunda.bpm.engine.ProcessEngineException: An exception occurred in the persistence layer. Please check the server logs for a detailed message and the entire exception stack trace.
+	at org.camunda.bpm.engine.impl.util.ExceptionUtil.wrapPersistenceException(ExceptionUtil.java:360)
+	at org.camunda.bpm.engine.impl.util.ExceptionUtil.doWithExceptionWrapper(ExceptionUtil.java:354)
+	at org.camunda.bpm.engine.impl.db.sql.DbSqlSession.isTablePresent(DbSqlSession.java:634)
+	... 46 more
+Caused by: org.apache.ibatis.exceptions.PersistenceException: 
+### Error getting a new connection.  Cause: java.sql.SQLException: Error setting driver on UnpooledDataSource. Cause: java.lang.ClassNotFoundException: org.h2.Driver
+### Cause: java.sql.SQLException: Error setting driver on UnpooledDataSource. Cause: java.lang.ClassNotFoundException: org.h2.Driver
+	at org.apache.ibatis.exceptions.ExceptionFactory.wrapException(ExceptionFactory.java:30)
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.getConnection(DefaultSqlSession.java:299)
+	at org.camunda.bpm.engine.impl.db.sql.DbSqlSession.lambda$isTablePresent$10(DbSqlSession.java:634)
+	at org.camunda.bpm.engine.impl.util.ExceptionUtil.doWithExceptionWrapper(ExceptionUtil.java:351)
+	... 47 more
+Caused by: java.sql.SQLException: Error setting driver on UnpooledDataSource. Cause: java.lang.ClassNotFoundException: org.h2.Driver
+	at org.apache.ibatis.datasource.unpooled.UnpooledDataSource.initializeDriver(UnpooledDataSource.java:244)
+	at org.apache.ibatis.datasource.unpooled.UnpooledDataSource.doGetConnection(UnpooledDataSource.java:223)
+	at org.apache.ibatis.datasource.unpooled.UnpooledDataSource.doGetConnection(UnpooledDataSource.java:219)
+	at org.apache.ibatis.datasource.unpooled.UnpooledDataSource.getConnection(UnpooledDataSource.java:95)
+	at org.apache.ibatis.datasource.pooled.PooledDataSource.popConnection(PooledDataSource.java:432)
+	at org.apache.ibatis.datasource.pooled.PooledDataSource.getConnection(PooledDataSource.java:89)
+	at org.apache.ibatis.transaction.jdbc.JdbcTransaction.openConnection(JdbcTransaction.java:139)
+	at org.apache.ibatis.transaction.jdbc.JdbcTransaction.getConnection(JdbcTransaction.java:61)
+	at org.apache.ibatis.session.defaults.DefaultSqlSession.getConnection(DefaultSqlSession.java:297)
+	... 49 more
+
